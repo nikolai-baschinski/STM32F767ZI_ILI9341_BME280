@@ -9,6 +9,7 @@
 #include "TIM.h"
 #include "NVIC.h"
 #include "BME.h"
+#include "I2C.h"
 #include "ProcessImage.h"
 
 #endif /* MAIN_H_ */

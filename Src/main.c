@@ -13,6 +13,7 @@ int main(void)
   init_GPIO();
   init_TIM();
   init_SPI();
+  init_I2C2();
   init_BME();
   init_LCD();
   init_NVIC();
@@ -32,10 +33,8 @@ void TIM2_IRQHandler(void)
       pi.print_on_lcd_flag = 1; // write the data once a second
     }
 
-    cyclic_BME(&pi.bme280); // this takes 83 us with prescaler 3 (measured with the oscilloscope)
+    cyclic_BME(&pi.bme280);
 
     pi.cntr_10ms++;
-
-    //GPIO_toggle_Pin_PG0();
   }
 }

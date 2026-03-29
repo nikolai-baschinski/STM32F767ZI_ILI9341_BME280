@@ -32,4 +32,10 @@ void init_PLL()
     // System Clock Mux
     RCC->CFGR |= RCC_CFGR_SW_PLL;
     while((RCC->CFGR & RCC_CFGR_SWS) != (RCC_CFGR_SWS_PLL));
+
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // enable peripheral clock for Port A
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN; // enable peripheral clock for Port B
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; // enable peripheral clock for Port C
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOFEN; // enable peripheral clock for Port F
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOGEN; // enable peripheral clock for Port G
 }

@@ -23,13 +23,13 @@ Connections (https://os.mbed.com/platforms/ST-Nucleo-F767ZI/)
 |----------|----------|--------------|
 | VCC      | 3,3V     | Vcc          |
 | GND      | GND      | GND          |
-| SCK      | PB13     | SPI2_CLK     |
-| MOSI     | PB15     | SPI2_MOSI    |
-| MISO     | PC2      | SPI2_MISO    |
-| CS       | PC0      | Chip Select  |
+| SCL      | PF1      | Clock        |
+| SDA      | PF0      | Data         |
+| ADDR     | not conn.|              |
+| CS       | 3,3V     | Vcc          |
 
 
-![BME280 raw data burst via SPI](/Doc/BME280_raw_data_burst_via_SPI.bmp)
+![BME280 raw data burst via SPI](/Doc/I2C_burst_read.bmp)
 
 BME280 raw data burst via SPI
 
@@ -43,3 +43,6 @@ BME280: https://seengreat.com/product/207/bme280-environmental-sensor?srsltid=Af
 LCD: https://www.waveshare.com/wiki/2.4inch_LCD_Module?srsltid=AfmBOoqtv3bq-mZfPtsi2BxiewwQnIkomXrloIzpVwGw_HnrOcmvQZar
 
 Nucleo-STM32767ZI: https://www.st.com/en/evaluation-tools/nucleo-f767zi.html
+
+
+Video: https://youtube.com/shorts/LbtwaH8bDvs?si=J_LBT7NFOr57htwr

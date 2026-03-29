@@ -1,10 +1,7 @@
 #include <string.h>
 #include "BME.h"
 #include "TIM.h"
-#include "SPI.h"
-
-const uint8_t ctrl_meas_addr = 0xF4;
-const uint8_t ctrl_hum_addr = 0xF2;
+#include "I2C.h"
 
 const float MAX_TEMPERATURE = 85.0f;
 const float MIN_TEMPERATURE = -40.0f;
@@ -15,7 +12,7 @@ const uint8_t MIN_HUMIDITY = 0;
 
 struct Calibration_T {
   // The calibration values are individual for each sensor and have to be read
-  // The data type is from the table 16 in BME280 data sheet
+  // The data types are from the table 16 in BME280 data sheet
   uint16_t dig_T1;
   int16_t dig_T2;
   int16_t dig_T3;
@@ -124,9 +121,7 @@ void bme_CS_disable()
 uint8_t bme_read(uint8_t data)
 {
   uint8_t rv = 0;
-  bme_CS_enable();
-  rv = spi2_send_recv(data);
-  bme_CS_disable();
+  rv = i2c2_read_write(data);
   return rv;
 }
 
@@ -284,26 +279,16 @@ void bme_compensate()
 
 void bme_get_raw_sensor_data()
 {
-  uint8_t burst_rcv_buffer[MAX_RECV_BURST]= {0};
-  uint16_t index = 0;
+  uint8_t* p_burst_rcv_buffer = i2c2_trancive_burst(0xF7, 8);
 
-  bme_CS_enable();
-
-  index = spi2_trancive_burst(0xF7, burst_rcv_buffer, index); // start burst
-  for(int i=0; i<4; i++) {
-    index = spi2_trancive_burst(0xFF, burst_rcv_buffer, index); // run the burst with dummy data on MOSI
-  }
-
-  bme_CS_disable();
-
-  bme.Adc_P.P_msb  = burst_rcv_buffer[1];
-  bme.Adc_P.P_lsb  = burst_rcv_buffer[2];
-  bme.Adc_P.P_xlsb = burst_rcv_buffer[3];
-  bme.Adc_T.T_msb  = burst_rcv_buffer[4];
-  bme.Adc_T.T_lsb  = burst_rcv_buffer[5];
-  bme.Adc_T.T_xlsb = burst_rcv_buffer[6];
-  bme.Adc_H.H_msb  = burst_rcv_buffer[7];
-  bme.Adc_H.H_lsb  = burst_rcv_buffer[8];
+  bme.Adc_P.P_msb  = p_burst_rcv_buffer[0];
+  bme.Adc_P.P_lsb  = p_burst_rcv_buffer[1];
+  bme.Adc_P.P_xlsb = p_burst_rcv_buffer[2];
+  bme.Adc_T.T_msb  = p_burst_rcv_buffer[3];
+  bme.Adc_T.T_lsb  = p_burst_rcv_buffer[4];
+  bme.Adc_T.T_xlsb = p_burst_rcv_buffer[5];
+  bme.Adc_H.H_msb  = p_burst_rcv_buffer[6];
+  bme.Adc_H.H_lsb  = p_burst_rcv_buffer[7];
 }
 
 void cyclic_BME(struct BME280_for_LCD* p_bme_data)
@@ -315,18 +300,13 @@ void cyclic_BME(struct BME280_for_LCD* p_bme_data)
 
 void init_BME()
 {
-  bme_CS_disable();
-  delay(20);
-
   memset(&bme, 0, sizeof(bme));
   bme_fetch_compensation_data(&bme);
 
-  bme_CS_enable();
+  #define LENGTH_BME_CONF 2
+  uint8_t control_bytes_F2[LENGTH_BME_CONF] = {0xF2, 0x01};
+  uint8_t control_bytes_F4[LENGTH_BME_CONF] = {0xF4, 0x27};
 
-  spi2_send(ctrl_hum_addr & 0x7F); // Write control byte address F2 write (0x72)
-  spi2_send(0x01); // Data byte oversampling is 1
-  spi2_send(ctrl_meas_addr & 0x7F); // Write control byte address F4 write (0x74)
-  spi2_send(0x27); // Data byte 0b0010.0111 oversampling is 1, mode is normal
-
-  bme_CS_disable();
+  i2c2_write(control_bytes_F2, LENGTH_BME_CONF);
+  i2c2_write(control_bytes_F4, LENGTH_BME_CONF);
 }
