@@ -1,33 +1,5 @@
-#include <LCD.h>
+#include "lcd.h"
 #include "TIM.h"
-
-void init_LCD()
-{
-  lcd_reset();
-  lcd_CS_enable();
-  lcd_init();
-  lcd_clear_display(WHITE);
-
-  Paint_NewImage(LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT, ROTATE_270, WHITE);
-  Paint_SetClearFuntion(lcd_clear_display);
-  Paint_SetDisplayFuntion(lcd_draw_paint);
-
-  Paint_DrawString_EN(10, 30, "Temperat:      C", &Font24, WHITE, BLACK);
-  Paint_DrawString_EN(10, 60, "Pressure:      hPa", &Font24, WHITE, BLACK);
-  Paint_DrawString_EN(10, 90, "Humidity:      %", &Font24, WHITE, BLACK);
-
-  lcd_CS_disable();
-}
-
-void SPI1_Enable()
-{
-  SPI1->CR1 |= (1<<6);
-}
-
-void SPI1_Disable()
-{
-  SPI1->CR1 &= ~(1<<6);
-}
 
 void lcd_CS_enable()
 {
@@ -105,9 +77,9 @@ void lcd_send_d_word(uint16_t data)
 void lcd_clear_display(uint16_t color)
 {
   lcd_set_window(0, 0, LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT);
-  lcd_DC_set_data();
-  for(int i = 0; i < LCD_2IN4_WIDTH; i++){
-    for(int j = 0; j < LCD_2IN4_HEIGHT; j++){
+
+  for(int i = 0; i < LCD_2IN4_WIDTH; i++) {
+    for(int j = 0; j < LCD_2IN4_HEIGHT; j++) {
       lcd_send_d_word(color);
     }
   }
@@ -117,9 +89,8 @@ void lcd_display_image(uint8_t *image)
 {
   lcd_set_window(0, 0, LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT);
 
-  lcd_DC_set_data();
-  for(uint8_t i = 0; i < LCD_2IN4_WIDTH; i++){
-    for(uint8_t j = 0; j < LCD_2IN4_HEIGHT; j++){
+  for(int i = 0; i < LCD_2IN4_WIDTH; i++) {
+    for(int j = 0; j < LCD_2IN4_HEIGHT; j++) {
       lcd_send_d_word(*(image+i*LCD_2IN4_WIDTH+j));
     }
   }
@@ -151,8 +122,8 @@ void lcd_draw_paint(uint16_t x, uint16_t y, uint16_t color)
 void lcd_clear_window(uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t Yend, uint16_t color)
 {
   lcd_set_window(Xstart, Ystart, Xend, Yend);
-  for(uint8_t i = Ystart; i <= Yend; i++) {
-    for(uint8_t j = Xstart; j <= Xend; j++) {
+  for(int i = Ystart; i <= Yend; i++) {
+    for(int j = Xstart; j <= Xend; j++) {
       lcd_send_d_word(color);
     }
   }
@@ -254,6 +225,24 @@ void lcd_init()
   lcd_send_d(0x38);
   lcd_send_d(0x0F);
   lcd_send_c(0x29);
+}
+
+void init_LCD()
+{
+  lcd_reset();
+  lcd_CS_enable();
+  lcd_init();
+  lcd_clear_display(WHITE);
+
+  Paint_NewImage(LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT, ROTATE_270, WHITE);
+  Paint_SetClearFuntion(lcd_clear_display);
+  Paint_SetDisplayFuntion(lcd_draw_paint);
+
+  Paint_DrawString_EN(10, 30, "Temperat:      C", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(10, 60, "Pressure:      hPa", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(10, 90, "Humidity:      %", &Font24, WHITE, BLACK);
+
+  lcd_CS_disable();
 }
 
 // write the data to the LCD on request and only if it has changed
