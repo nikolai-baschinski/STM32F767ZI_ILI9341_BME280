@@ -108,16 +108,6 @@ void bme_get_sensor_data(struct BME280_for_LCD* p_bme_data)
   }
 }
 
-void bme_CS_enable()
-{
-  GPIOC->BSRR = 1U << (0+16); // Clear pin 6 of port B, which means chip select enable
-}
-
-void bme_CS_disable()
-{
-  GPIOC->BSRR = 1U << 0; // Set pin 6 of port B, which means chip select disable
-}
-
 uint8_t bme_read(uint8_t data)
 {
   uint8_t rv = 0;
