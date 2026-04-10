@@ -31,7 +31,7 @@ Connections (https://os.mbed.com/platforms/ST-Nucleo-F767ZI/)
 
 ![BME280 raw data burst via SPI](/Doc/I2C_burst_read.bmp)
 
-BME280 raw data burst via SPI
+BME280 raw data burst via I2C
 
 ![Software_architecture](/Doc/Software_architecture.bmp)
 
