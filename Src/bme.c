@@ -1,6 +1,5 @@
 #include <string.h>
 #include "BME.h"
-#include "TIM.h"
 #include "I2C.h"
 
 const float MAX_TEMPERATURE = 85.0f;
