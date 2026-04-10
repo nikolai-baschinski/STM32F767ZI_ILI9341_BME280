@@ -103,9 +103,6 @@ void bme_get_sensor_data(struct BME280_for_LCD* p_bme_data)
   float tmp_H = bme.H / 1024.0f;
   uint8_t tmp_H_uint8 = tmp_H + 0.5f;
   p_bme_data->humidity = tmp_H_uint8;
-  if(p_bme_data->humidity < MIN_HUMIDITY) {
-    p_bme_data->humidity = MIN_HUMIDITY;
-  }
   if(p_bme_data->humidity > MAX_HUMIDITY) {
     p_bme_data->humidity = MAX_HUMIDITY;
   }
