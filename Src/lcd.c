@@ -118,8 +118,8 @@ void lcd_display_image(uint8_t *image)
   lcd_set_window(0, 0, LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT);
 
   lcd_DC_set_data();
-  for(uint8_t i = 0; i < LCD_2IN4_WIDTH; i++){
-    for(uint8_t j = 0; j < LCD_2IN4_HEIGHT; j++){
+  for(int i = 0; i < LCD_2IN4_WIDTH; i++){
+    for(int j = 0; j < LCD_2IN4_HEIGHT; j++){
       lcd_send_d_word(*(image+i*LCD_2IN4_WIDTH+j));
     }
   }
