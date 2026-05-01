@@ -110,7 +110,7 @@ void bme_get_sensor_data(struct BME280_for_LCD* p_bme_data)
 uint8_t bme_read(uint8_t data)
 {
   uint8_t rv = 0;
-  rv = i2c2_read_write(data);
+  rv = i2c2_write_read(data);
   return rv;
 }
 
