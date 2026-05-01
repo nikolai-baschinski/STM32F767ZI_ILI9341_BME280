@@ -151,8 +151,8 @@ void lcd_draw_paint(uint16_t x, uint16_t y, uint16_t color)
 void lcd_clear_window(uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t Yend, uint16_t color)
 {
   lcd_set_window(Xstart, Ystart, Xend, Yend);
-  for(uint8_t i = Ystart; i <= Yend; i++) {
-    for(uint8_t j = Xstart; j <= Xend; j++) {
+  for(int i = Ystart; i <= Yend; i++) {
+    for(int j = Xstart; j <= Xend; j++) {
       lcd_send_d_word(color);
     }
   }
