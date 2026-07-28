@@ -8,7 +8,7 @@
 struct ProcessImage {
   struct BME280_for_LCD bme280;
   struct BME280_for_LCD bme280_memory;
-  uint8_t print_on_lcd_flag;
+  volatile uint8_t print_on_lcd_flag;
   uint32_t cntr_10ms;
 };
 
