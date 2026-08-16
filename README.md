@@ -29,7 +29,7 @@ Connections (https://os.mbed.com/platforms/ST-Nucleo-F767ZI/)
 | CS       | PC0      | Chip Select  |
 
 
-![BME280 raw data burst via SPI](/Doc/BME280_raw_data_burst_via_SPI.bmp)
+![BME280 raw data burst via SPI](/Doc/burst_6_MHz_SPI_clock.bmp)
 
 BME280 raw data burst via SPI
 

@@ -3,10 +3,9 @@
 
 #include <stdint.h>
 
-#define MAX_RECV_BURST 10
-
 void init_SPI();
-uint8_t spi_trancive_burst(uint8_t data, uint8_t* rcv_buf, uint8_t index);
+void spi_transfer(const uint8_t* tx_buf, uint8_t* rx_buf, uint8_t len);
+void spi_transfer_dma(const uint8_t* tx_buf, uint8_t* rx_buf, uint16_t len);
 void spi_send(uint8_t byte);
 uint8_t spi_send_recv(uint8_t data);
 

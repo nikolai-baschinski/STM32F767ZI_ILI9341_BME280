@@ -281,26 +281,21 @@ void bme_compensate()
 
 void bme_get_raw_sensor_data()
 {
-  uint8_t burst_rcv_buffer[MAX_RECV_BURST]= {0};
-  uint16_t index = 0;
+  uint8_t tx[9] = {0xF7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; // start address + 8 dummy bytes
+  uint8_t rx[9] = {0};
 
   bme_CS_enable();
-
-  index = spi_trancive_burst(0xF7, burst_rcv_buffer, index); // start burst
-  for(int i=0; i<4; i++) {
-    index = spi_trancive_burst(0xFF, burst_rcv_buffer, index); // run the burst with dummy data on MOSI
-  }
-
+  spi_transfer_dma(tx, rx, 9);
   bme_CS_disable();
 
-  bme.Adc_P.P_msb  = burst_rcv_buffer[1];
-  bme.Adc_P.P_lsb  = burst_rcv_buffer[2];
-  bme.Adc_P.P_xlsb = burst_rcv_buffer[3];
-  bme.Adc_T.T_msb  = burst_rcv_buffer[4];
-  bme.Adc_T.T_lsb  = burst_rcv_buffer[5];
-  bme.Adc_T.T_xlsb = burst_rcv_buffer[6];
-  bme.Adc_H.H_msb  = burst_rcv_buffer[7];
-  bme.Adc_H.H_lsb  = burst_rcv_buffer[8];
+  bme.Adc_P.P_msb  = rx[1];
+  bme.Adc_P.P_lsb  = rx[2];
+  bme.Adc_P.P_xlsb = rx[3];
+  bme.Adc_T.T_msb  = rx[4];
+  bme.Adc_T.T_lsb  = rx[5];
+  bme.Adc_T.T_xlsb = rx[6];
+  bme.Adc_H.H_msb  = rx[7];
+  bme.Adc_H.H_lsb  = rx[8];
 }
 
 void cyclic_BME(struct BME280_for_LCD* p_bme_data)
