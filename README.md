@@ -23,9 +23,9 @@ Connections (https://os.mbed.com/platforms/ST-Nucleo-F767ZI/)
 |----------|----------|--------------|
 | VCC      | 3,3V     | Vcc          |
 | GND      | GND      | GND          |
-| SCK      | PB13     | SPI2_CLK     |
-| MOSI     | PB15     | SPI2_MOSI    |
-| MISO     | PC2      | SPI2_MISO    |
+| SCK      | PA5      | SPI1_CLK     |
+| MOSI     | PA7      | SPI1_MOSI    |
+| MISO     | PA6      | SPI1_MISO    |
 | CS       | PC0      | Chip Select  |
 
 

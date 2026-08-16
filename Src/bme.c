@@ -122,7 +122,7 @@ uint8_t bme_read(uint8_t data)
 {
   uint8_t rv = 0;
   bme_CS_enable();
-  rv = spi2_send_recv(data);
+  rv = spi_send_recv(data);
   bme_CS_disable();
   return rv;
 }
@@ -286,9 +286,9 @@ void bme_get_raw_sensor_data()
 
   bme_CS_enable();
 
-  index = spi2_trancive_burst(0xF7, burst_rcv_buffer, index); // start burst
+  index = spi_trancive_burst(0xF7, burst_rcv_buffer, index); // start burst
   for(int i=0; i<4; i++) {
-    index = spi2_trancive_burst(0xFF, burst_rcv_buffer, index); // run the burst with dummy data on MOSI
+    index = spi_trancive_burst(0xFF, burst_rcv_buffer, index); // run the burst with dummy data on MOSI
   }
 
   bme_CS_disable();
@@ -312,18 +312,15 @@ void cyclic_BME(struct BME280_for_LCD* p_bme_data)
 
 void init_BME()
 {
-  bme_CS_disable();
-  delay(20);
-
   memset(&bme, 0, sizeof(bme));
   bme_fetch_compensation_data(&bme);
 
   bme_CS_enable();
 
-  spi2_send(ctrl_hum_addr & 0x7F); // Write control byte address F2 write (0x72)
-  spi2_send(0x01); // Data byte oversampling is 1
-  spi2_send(ctrl_meas_addr & 0x7F); // Write control byte address F4 write (0x74)
-  spi2_send(0x27); // Data byte 0b0010.0111 oversampling is 1, mode is normal
+  spi_send(ctrl_hum_addr & 0x7F); // Write control byte address F2 write (0x72)
+  spi_send(0x01); // Data byte oversampling is 1
+  spi_send(ctrl_meas_addr & 0x7F); // Write control byte address F4 write (0x74)
+  spi_send(0x27); // Data byte 0b0010.0111 oversampling is 1, mode is normal
 
   bme_CS_disable();
 }

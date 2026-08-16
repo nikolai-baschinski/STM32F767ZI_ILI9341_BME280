@@ -15,16 +15,15 @@ void init_GPIO()
   GPIOA->MODER |= (1<<0);  // PA0 as output for DC (LCD)
   GPIOB->MODER |= (1<<12); // PB6 as output for CS (LCD)
   GPIOB->MODER |= (1<<18); // PB9 as output for RST (LCD)
-  GPIOB->MODER |= (2<<26) | (2<<30); // Alternate functions for PB13 (SPI2_CLK) and PB15 (SPI2_MOSI)
-  GPIOC->MODER |= (2<<4); // Alternate function for PC2 (SPI2_MISO)
 
-  GPIOA->OSPEEDR |= (3<<0) | (3<<10) | (3<<12) | (3<<14); // high speed PA0 (SS), PA5 (SPI1_CLK), PA6 (SPI1_MISO) and PA7 (SPI1_MOSI)
-  GPIOB->OSPEEDR |= (3<<26) | (3<<30);
-  GPIOC->OSPEEDR |= (3<<4);
+  GPIOA->OSPEEDR |= (3<<0) | (3<<10) | (3<<12) | (3<<14); // high speed PA0 (DC LCD), PA5 (SPI1_CLK), PA6 (SPI1_MISO) and PA7 (SPI1_MOSI)
+  GPIOC->OSPEEDR |= (3<<4); // high speed PC0 (CS BME280)
 
   GPIOA->AFR[0] |= (5<<20) | (5<<24) | (5<<28); // Alternate function 5 for SPI1
-  GPIOB->AFR[1] |= (5<<20) | (5<<28); // Alternate function 5 for SPI2
-  GPIOC->AFR[0] |= (5<<8);
+
+  GPIOC->BSRR = 1U << 0; // start value for CS BME280 is 1
+  GPIOB->BSRR = 1U << 6; // start value for CS LCD is 1
+  GPIOB->BSRR = 1U << 9; // start value for RST is 1
 }
 
 void GPIO_toggle_green_LED()

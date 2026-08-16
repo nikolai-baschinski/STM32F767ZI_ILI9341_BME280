@@ -18,21 +18,20 @@ int main(void)
   init_NVIC();
 
   for(;;) {
+    cyclic_BME(&pi.bme280);
     cyclic_LCD(&pi);
+    delay(1000);
   }
 }
 
-void TIM2_IRQHandler(void)
+void TIM3_IRQHandler(void)
 {
-  if(TIM2->SR & TIM_SR_UIF) {
-    TIM2->SR &= ~TIM_SR_UIF; // reset UIF bit in the status register of the timer
+  if(TIM3->SR & TIM_SR_UIF) {
+    TIM3->SR &= ~TIM_SR_UIF; // reset UIF bit in the status register of the timer
 
     if(pi.cntr_10ms % 100 == 0) {
       GPIO_toggle_green_LED();
-      pi.print_on_lcd_flag = 1; // write the data once a second
     }
-
-    cyclic_BME(&pi.bme280); // this takes 83 us with prescaler 3 (measured with the oscilloscope)
 
     pi.cntr_10ms++;
 

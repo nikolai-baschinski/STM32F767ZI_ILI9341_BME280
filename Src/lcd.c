@@ -1,5 +1,6 @@
 #include "lcd.h"
 #include "TIM.h"
+#include "SPI.h"
 
 void lcd_CS_enable()
 {
@@ -29,13 +30,6 @@ void lcd_DC_set_data()
 void lcd_DC_set_command()
 {
   GPIOA->BSRR = 1U << (0+16);
-}
-
-void spi_send(uint8_t byte)
-{
-  while(!(SPI1->SR & SPI_SR_TXE));
-  *((__IO uint8_t*)&SPI1->DR) = byte;
-  while(SPI1->SR & SPI_SR_BSY);
 }
 
 void lcd_send_c(uint8_t byte)
@@ -131,8 +125,6 @@ void lcd_clear_window(uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t 
 
 void lcd_reset()
 {
-  lcd_RST_set();
-  delay(100);
   lcd_RST_reset();
   delay(100);
   lcd_RST_set();
@@ -248,32 +240,28 @@ void init_LCD()
 // write the data to the LCD on request and only if it has changed
 void cyclic_LCD(struct ProcessImage* p_pi)
 {
-  if(p_pi->print_on_lcd_flag == 1) {
-    p_pi->print_on_lcd_flag = 0;
-
-    if(p_pi->bme280.temperature != p_pi->bme280_memory.temperature) {
-      lcd_CS_enable();
-      Paint_ClearWindows(180, 30, 180+17*5, 50, WHITE);
-      Paint_DrawFloatNum(180, 30, p_pi->bme280.temperature, 1, &Font24, WHITE, BLACK);
-      lcd_CS_disable();
-    }
-
-    if(p_pi->bme280.pressure != p_pi->bme280_memory.pressure) {
-      lcd_CS_enable();
-      Paint_ClearWindows(180, 60, 180+17*4, 80, WHITE);
-      Paint_DrawNum(180, 60, p_pi->bme280.pressure, &Font24, WHITE, BLACK);
-      lcd_CS_disable();
-    }
-
-    if(p_pi->bme280.humidity != p_pi->bme280_memory.humidity) {
-      lcd_CS_enable();
-      Paint_ClearWindows(180, 90, 180+17*3, 110, WHITE);
-      Paint_DrawNum(180, 90, p_pi->bme280.humidity, &Font24, WHITE, BLACK);
-      lcd_CS_disable();
-    }
-
-    p_pi->bme280_memory.temperature = p_pi->bme280.temperature;
-    p_pi->bme280_memory.pressure = p_pi->bme280.pressure;
-    p_pi->bme280_memory.humidity = p_pi->bme280.humidity;
+  if(p_pi->bme280.temperature != p_pi->bme280_memory.temperature) {
+    lcd_CS_enable();
+    Paint_ClearWindows(180, 30, 180+17*5, 50, WHITE);
+    Paint_DrawFloatNum(180, 30, p_pi->bme280.temperature, 1, &Font24, WHITE, BLACK);
+    lcd_CS_disable();
   }
+
+  if(p_pi->bme280.pressure != p_pi->bme280_memory.pressure) {
+    lcd_CS_enable();
+    Paint_ClearWindows(180, 60, 180+17*4, 80, WHITE);
+    Paint_DrawNum(180, 60, p_pi->bme280.pressure, &Font24, WHITE, BLACK);
+    lcd_CS_disable();
+  }
+
+  if(p_pi->bme280.humidity != p_pi->bme280_memory.humidity) {
+    lcd_CS_enable();
+    Paint_ClearWindows(180, 90, 180+17*3, 110, WHITE);
+    Paint_DrawNum(180, 90, p_pi->bme280.humidity, &Font24, WHITE, BLACK);
+    lcd_CS_disable();
+  }
+
+  p_pi->bme280_memory.temperature = p_pi->bme280.temperature;
+  p_pi->bme280_memory.pressure = p_pi->bme280.pressure;
+  p_pi->bme280_memory.humidity = p_pi->bme280.humidity;
 }
