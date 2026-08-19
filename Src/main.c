@@ -17,7 +17,7 @@ int main(void)
   init_LCD();
   init_NVIC();
 
-  for(;;) {
+  while(1) {
     cyclic_BME(&pi.bme280);
     cyclic_LCD(&pi);
     delay(1000);

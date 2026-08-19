@@ -35,13 +35,13 @@ void lcd_DC_set_command()
 void lcd_send_c(uint8_t byte)
 {
   lcd_DC_set_command();
-  spi_send(byte);
+  spi_transfer(&byte, 0, 1);
 }
 
 void lcd_send_d(uint8_t byte)
 {
   lcd_DC_set_data();
-  spi_send(byte);
+  spi_transfer(&byte, 0, 1);
 }
 
 void lcd_set_window(uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t Yend)
@@ -63,9 +63,9 @@ void lcd_set_window(uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t Ye
 
 void lcd_send_d_word(uint16_t data)
 {
+  uint8_t tx[2] = {(data>>8) & 0xff, (uint8_t)data};
   lcd_DC_set_data();
-  spi_send((data>>8) & 0xff);
-  spi_send(data);
+  spi_transfer(tx, 0, 2);
 }
 
 void lcd_clear_display(uint16_t color)

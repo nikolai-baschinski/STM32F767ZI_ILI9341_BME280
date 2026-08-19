@@ -27,27 +27,16 @@ void init_SPI()
   SPI1->CR1 |= (1<<6); // Enable SPI
 }
 
-// Keeps the TXFIFO fed as long as there is room (TXE) instead of waiting
-// for each byte to fully finish (BSY), so SCK runs without gaps between
-// bytes - same principle the NXP Flexcomm SPI driver uses for its FIFO.
-// rx_buf may be 0 if the received bytes are not needed.
 void spi_transfer(const uint8_t* tx_buf, uint8_t* rx_buf, uint8_t len)
 {
-  uint8_t tx_index = 0;
-  uint8_t rx_index = 0;
+  for(uint8_t i = 0; i < len; i++) {
+    while(!(SPI1->SR & SPI_SR_TXE));
+    *((__IO uint8_t*)&SPI1->DR) = tx_buf[i];
 
-  while(rx_index < len) {
-    if((tx_index < len) && (SPI1->SR & SPI_SR_TXE)) {
-      *((__IO uint8_t*)&SPI1->DR) = tx_buf[tx_index];
-      tx_index++;
-    }
-
-    if(SPI1->SR & SPI_SR_RXNE) {
-      uint8_t byte = *((__IO uint8_t*)&SPI1->DR);
-      if(rx_buf != 0) {
-        rx_buf[rx_index] = byte;
-      }
-      rx_index++;
+    while(!(SPI1->SR & SPI_SR_RXNE));
+    uint8_t byte = *((__IO uint8_t*)&SPI1->DR);
+    if(rx_buf != 0) {
+      rx_buf[i] = byte;
     }
   }
 
@@ -91,17 +80,4 @@ void spi_transfer_dma(const uint8_t* tx_buf, uint8_t* rx_buf, uint16_t len)
   SPI1->CR2 &= ~(SPI_CR2_TXDMAEN | SPI_CR2_RXDMAEN);
   DMA2_Stream0->CR &= ~DMA_SxCR_EN;
   DMA2_Stream3->CR &= ~DMA_SxCR_EN;
-}
-
-void spi_send(uint8_t byte)
-{
-  spi_transfer(&byte, 0, 1);
-}
-
-uint8_t spi_send_recv(uint8_t data)
-{
-  uint8_t tx[2] = {data, 0xFF};
-  uint8_t rx[2] = {0, 0};
-  spi_transfer(tx, rx, 2);
-  return rx[1];
 }

@@ -3,9 +3,6 @@
 #include "TIM.h"
 #include "SPI.h"
 
-const uint8_t ctrl_meas_addr = 0xF4;
-const uint8_t ctrl_hum_addr = 0xF2;
-
 const float MAX_TEMPERATURE = 85.0f;
 const float MIN_TEMPERATURE = -40.0f;
 const uint16_t MAX_PRESSURE = 1100;
@@ -120,11 +117,12 @@ void bme_CS_disable()
 
 uint8_t bme_read(uint8_t data)
 {
-  uint8_t rv = 0;
+  uint8_t tx[2] = {data, 0xFF};
+  uint8_t rx[2] = {0, 0};
   bme_CS_enable();
-  rv = spi_send_recv(data);
+  spi_transfer(tx, rx, 2);
   bme_CS_disable();
-  return rv;
+  return rx[1];
 }
 
 void bme_fetch_compensation_data(struct BME* bme)
@@ -310,12 +308,9 @@ void init_BME()
   memset(&bme, 0, sizeof(bme));
   bme_fetch_compensation_data(&bme);
 
+#define BME280_CONFIG_BUFFER 4
+  uint8_t tx[BME280_CONFIG_BUFFER] = {0x72, 0x01, 0x74, 0x27}; // BME configuration
   bme_CS_enable();
-
-  spi_send(ctrl_hum_addr & 0x7F); // Write control byte address F2 write (0x72)
-  spi_send(0x01); // Data byte oversampling is 1
-  spi_send(ctrl_meas_addr & 0x7F); // Write control byte address F4 write (0x74)
-  spi_send(0x27); // Data byte 0b0010.0111 oversampling is 1, mode is normal
-
+  spi_transfer(tx, 0, BME280_CONFIG_BUFFER);
   bme_CS_disable();
 }
