@@ -4,9 +4,6 @@ BME280 data (temperature, air pressure and humidity) displayed on the Waveshare 
 
 BME280 and 2.4" LCD
 
-Connections (https://os.mbed.com/platforms/ST-Nucleo-F767ZI/)
-
-
 | LCD      | Port     | Function     |
 |----------|----------|------------- |
 | VCC      | 3,3V     | Vcc          |
@@ -45,3 +42,6 @@ LCD: https://www.waveshare.com/wiki/2.4inch_LCD_Module?srsltid=AfmBOoqtv3bq-mZfP
 Nucleo-STM32767ZI: https://www.st.com/en/evaluation-tools/nucleo-f767zi.html
 
 Video: https://youtube.com/shorts/LbtwaH8bDvs?si=J_LBT7NFOr57htwr
+
+![](Doc/nucleo_f767zi_CN7-CN10.bmp)
+![](Doc/nucleo_f767zi_CN8-CN9.bmp)
